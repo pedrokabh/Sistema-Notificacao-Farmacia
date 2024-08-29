@@ -9,6 +9,9 @@ Este projeto é uma solução, para a fármacia de um amigo, que não quer pagar
 3. SqlAlchemy para conversar com o nosso banco de dados (MariaDB).
 4. Selenium para realizar o envio automático das mensagens via WhatsApp.
 
+## RailWay
+Utilizamos o serviço de hospedagem grátis da RailWay para colocar nosso site no ar. Tente acessar: https://sistema-farmacia-production.up.railway.app/ para utilizar a ferramenta, caso não consiga acesso, pode ser que desligamos temporariamente o serviço. 
+
 ## Como Utilizar
 
 Para utilizar esse simples sistema é necessário cadastrar os dados de contato do cliente, e cadastrar os medicamentos junto com a data estipulada para acabar a medicação. Apartir dessas informações, o sistema utiliza a funcionalidade de envio via WPP para avisar no dia de vencimento da medicação. O envio é feito apartir de uma semi-automação. Aonde o usuário irá precisar logar no seu WhatsApp Web via Qr Code, e após feita atutenticação o Selenium faz o envio através de um RPA.
