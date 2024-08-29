@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .container .right {
+            flex: 1;
+            padding: 40px 60px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .right button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 250px;
+            box-sizing: border-box;
+        }
+
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div>
+            <h3 style="text-align: center; margin-right: 20px;">Olá {{vendedor.text}}, {{ vendedor.nome }}.</h3>
+            <br>
+        </div>
+        <div class="container">
+            <div class="right">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <h2>Selecione uma Ação</h2>
+                <br>
+                <button style="background-color: #8aeca1;"><a href="{{ url_for('clientes.cadastrar_clientes') }}">Cadastrar Cliente</a></button>
+                <br>
+                <button style="background-color: #8aeca1;"><a href="{{ url_for('clientes.listar_clientes') }}">Consultar Clientes</a></button>
+                <br>
+                <button style="background-color: #e27975;"><a href="{{ url_for('venda.listar_notificacoes')}}">Notificar Usuários</a></button>
+                {% if vendedor.admin %}
+                <br>
+                <button style="background-color: #b1b1b1;"><a >Gerenciar Usuários</a></button>
+                <br>
+                <button style="background-color: #b1b1b1;"><a >Gerenciar Sistema</a></button>
+                {% endif %}
+                <br>
+                <button style="background-color: #ffffff;"><a href="{{ url_for('home.desconectar') }}">Desconectar</a></button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

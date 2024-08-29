@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área de Cadastro</title>
+    <style>
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            background-color: #fff;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .right {
+            flex: 1;
+            padding: 40px 60px;
+            box-sizing: border-box;
+        }
+
+        .right h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-group div {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+        }
+
+        .form-group div:last-child {
+            margin-right: 0;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+            <div class="right">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <h2 style="padding-bottom: 10px; text-align: center;">Cadastro de Clientes</h2>
+                <form id="cliente-form" action="{{ url_for('clientes.cadastrar_clientes') }}" method="post">
+                    <div class="form-group">
+                        <div>
+                            <label for="cpf">CPF:</label>
+                            <input type="text" id="cpf" name="cpf" required oninput="formatCPF(this)" placeholder="000.000.000-00" maxlength="14">
+                        </div>
+                        <div>
+                            <label for="data_nascimento">Data de Nascimento:</label>
+                            <input type="date" id="data_nascimento" name="data_nascimento">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            <label for="nome">Nome:</label>
+                            <input type="text" id="nome" name="nome" placeholder="Wilson Gustavo Jesus" required>
+                        </div>
+                        <div>
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" placeholder="teste@gmail.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            <label for="ddi">Código País:</label>
+                            <input type="text" id="ddi" name="ddi" value="+55" required maxlength="4" oninput="formatCountryCode(this)">
+                        </div>
+                        <div>
+                            <label for="ddd">DDD:</label>
+                            <input type="text" id="ddd" name="ddd" placeholder="31" required maxlength="3" oninput="validateDDD(this)">
+                        </div>
+                        <div>
+                            <label for="celular">Celular:</label>
+                            <input type="text" id="celular" name="celular" placeholder="995762342" required maxlength="10" oninput="validatePhone(this)">
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit">Adicionar Cliente</button>
+                    </div>
+                </form>
+                <p style="text-align: center;"><a href="{{ url_for('home.menu') }}">Voltar para Menu</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    function formatCPF(cpfField) {
+        let cpf = cpfField.value.replace(/\D/g, '');
+        if (cpf.length > 11) {
+            cpf = cpf.substring(0, 11);
+        }
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        cpfField.value = cpf;
+        validateCPF(cpfField);
+    }
+
+    function formatCountryCode(countryCodeField) {
+        let countryCode = countryCodeField.value.replace(/\D/g, '');
+        if (countryCode.length > 3) {
+            countryCode = countryCode.substring(0, 3);
+        }
+        countryCodeField.value = '+' + countryCode;
+        validateCountryCode(countryCodeField);
+    }
+
+
+    function validateCPF(cpfField){
+        const cpf = cpfField.value.replace(/\D/g, '');
+        const errorElement = document.getElementById('cpf-error');
+
+        if (cpf.length !== 11){
+            errorElement.style.display = 'block';
+            cpfField.setCustomValidity('Verifique se o CPF tem 11 dígitos.');
+        }else{
+            errorElement.style.display='none';
+            cpfField.setCustomValidity('');
+        }
+    }
+
+    function validateName(nameField) {
+        const name = nameField.value;
+        const errorElement = document.getElementById('name-error');
+        const namePattern = /^[A-Za-zÀ-ÖØ-ÿ\s]+$/; // Regex para letras e espaços
+
+        if (!namePattern.test(name)) {
+            errorElement.style.display = 'block';
+            nameField.setCustomValidity('O nome deve conter apenas letras e espaços.');
+        } else {
+            errorElement.style.display = 'none';
+            nameField.setCustomValidity('');
+        }
+    }
+
+    function validatePhone(phoneField) {
+        let phone = phoneField.value.replace(/\D/g, '');
+        const errorElement = document.getElementById('celular-error');
+
+        // Limita o valor a 10 caracteres
+        if (phone.length > 10) {
+            phone = phone.substring(0, 10);
+        }
+        phoneField.value = phone; // Atualiza o campo com o valor filtrado
+
+        if (phone.length < 8 || phone.length > 10) {
+            errorElement.style.display = 'block';
+            phoneField.setCustomValidity('O celular deve conter de 8 á 10 dígitos.');
+        } else {
+            errorElement.style.display = 'none';
+            phoneField.setCustomValidity('');
+        }
+    }
+
+    function validateCountryCode(countryCodeField) {
+        const countryCode = countryCodeField.value.replace(/\D/g, '');
+        const errorElement = document.getElementById('ddi-error');
+
+        if (countryCode.length < 2 || countryCode.length > 3) {
+            errorElement.style.display = 'block';
+            countryCodeField.setCustomValidity('O código do país deve conter 2 ou 3 dígitos após o sinal de mais.');
+        } else {
+            errorElement.style.display = 'none';
+            countryCodeField.setCustomValidity('');
+        }
+    }
+
+    function validateDDD(dddField) {
+        const ddd = dddField.value.replace(/\D/g, '');
+        const errorElement = document.getElementById('ddd-error');
+
+        // Limita o valor a 3 caracteres
+        if (ddd.length > 3) {
+            dddField.value = ddd.substring(0, 3);
+        }
+
+        if (ddd.length < 2 || ddd.length > 3) {
+            errorElement.style.display = 'block';
+            dddField.setCustomValidity('O DDD deve conter 2 ou 3 dígitos.');
+        } else {
+            errorElement.style.display = 'none';
+            dddField.setCustomValidity('');
+        }
+    }
+
+    document.getElementById('cliente-form').addEventListener('submit', function(event) {
+        const cpfField = document.getElementById('cpf');
+        const nameField = document.getElementById('nome');
+        const phoneField = document.getElementById('celular');
+        const countryCodeField = document.getElementById('ddi');
+        const dddField = document.getElementById('ddd');
+
+        validateCPF(cpfField);
+        validateName(nameField);
+        validatePhone(phoneField);
+        validateCountryCode(countryCodeField);
+        validateDDD(dddField);
+
+        // Impede o envio caso alguma das condições sejam atendidas.
+        if (!nameField.checkValidity() || !cpfField.checkValidity() || !phoneField.checkValidity() || !countryCodeField.checkValidity() || !dddField.checkValidity()) {
+            event.preventDefault();
+        }
+    });
+
+    document.getElementById('nome').addEventListener('input', function() {
+        validateName(this);
+    });
+
+    document.getElementById('celular').addEventListener('input', function() {
+        validatePhone(this);
+    });
+
+    document.getElementById('ddi').addEventListener('input', function() {
+        formatCountryCode(this);
+    });
+
+    document.getElementById('ddd').addEventListener('input', function() {
+        validateDDD(this);
+    });
+</script>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área de Login</title>
+    <style>
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .container .right {
+            flex: 1;
+            padding: 40px 60px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .right h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .right form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .right form div {
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .right form label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            width: 100%;
+        }
+
+        .right form input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            box-sizing: border-box;
+        }
+
+        .right form button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 250px;
+            box-sizing: border-box;
+        }
+
+        .right form button:hover {
+            background-color: #0056b3;
+        }
+
+        .right p {
+            margin-top: 20px;
+            color: #555;
+            text-align: center;
+        }
+
+        .right p a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .right p a:hover {
+            text-decoration: underline;
+        }
+
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="container">
+            <div class="right">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <h2>Acessar o Sistema</h2>
+                <form method="post" action="{{ url_for('home.login') }}">
+                    <div>
+                        <label for="username">Username</label>
+                        <input type="text" placeholder="nome@dominio.com.br" id="username" name="username" required>
+                    </div>
+                    <div>
+                        <label for="password">Password</label>
+                        <input type="password" placeholder="senhasecreta" id="password" name="password" required>
+                    </div>
+                    <button type="submit">Realizar Login</button>
+                </form>
+                <p>Não possui uma conta? <a href="{{ url_for('home.suporte') }}">Criar Conta</a></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

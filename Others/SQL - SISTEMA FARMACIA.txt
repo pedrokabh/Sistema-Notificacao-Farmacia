@@ -1,0 +1,56 @@
+SQL - SISTEMA FARMACIA
+
+-- CREATE DATA BASE --
+CREATE DATABASE sistema_farmacia;
+USE sistema farmácia;
+
+-- CREATE TABLES --
+CREATE TABLE `login` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cpf` varchar(11) NOT NULL,
+  `nome` varchar(50) NOT NULL,
+  `usuario` varchar(30) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cpf` (`cpf`),
+  UNIQUE KEY `usuario` (`usuario`)
+)
+
+CREATE TABLE `cliente` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cpf` varchar(11) NOT NULL,
+  `nome` varchar(80) NOT NULL,
+  `data_nascimento` date DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `ddi` char(3) NOT NULL,
+  `ddd` char(3) NOT NULL,
+  `numero` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cpf` (`cpf`),
+  UNIQUE KEY `ddi` (`ddi`,`ddd`,`numero`)
+)
+
+CREATE TABLE `venda` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) NOT NULL,
+  `id_vendedor` int(11) NOT NULL,
+  `medicacao` varchar(100) NOT NULL,
+  `receita` mediumblob NOT NULL,
+  `dataRevenda` date NOT NULL,
+  `dataVenda` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_cliente` (`id_cliente`),
+  KEY `id_vendedor` (`id_vendedor`),
+  CONSTRAINT `venda_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id`),
+  CONSTRAINT `venda_ibfk_2` FOREIGN KEY (`id_vendedor`) REFERENCES `login` (`id`)
+)
+
+
+
+--- CONJUNTO DE DADOS PARA TESTES ---
+
+# senha 123
+joao.silva
+
+# senha 456
+maria.silva

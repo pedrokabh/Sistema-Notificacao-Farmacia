@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Clientes</title>
+    <style>
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+            max-height: 90vh; /* Limita o crescimento vertical */
+            background-color: #fff;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .right {
+            text-align: center;
+            width: 100%;
+            overflow-y: auto; /* Barra de rolagem vertical */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .btn-vendas, .btn-editar, .btn-apagar, .btn-cadastrar {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-editar {
+            background-color: #f0ad4e;
+        }
+
+        .btn-apagar {
+            background-color: #d9534f;
+        }
+
+        .btn-cadastrar {
+            background-color: #0275d8;
+            margin-top: 10px;
+        }
+
+        .btn-vendas:hover, .btn-editar:hover, .btn-apagar:hover, .btn-cadastrar:hover {
+            opacity: 0.8;
+        }
+
+        .btn-vendas a, .btn-editar a, .btn-apagar a, .btn-cadastrar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .flash {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            text-align: center;
+        }
+
+        .flash.success {
+            background-color: #4CAF50;
+        }
+
+        .flash.error {
+            background-color: #d9534f;
+        }
+
+        p a {
+            text-decoration: none;
+            color: #0275d8;
+            transition: color 0.3s;
+        }
+
+        p a:hover {
+            color: #0256a3;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+            <h2>Consultar Clientes Cadastrados</h2>
+            <div class="right">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <!-- Tabela de clientes -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>CPF</th>
+                            <th>Nome</th>
+                            <th>Data de Nascimento</th>
+                            <th>Email</th>
+                            <th>Celular</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente.id }}</td>
+                            <td>{{ cliente.cpf }}</td>
+                            <td>{{ cliente.nome }}</td>
+                            <td>{{ cliente.data_nascimento }}</td>
+                            <td>{{ cliente.email }}</td>
+                            <td>+{{ cliente.ddi }} ({{ cliente.ddd }}) {{ cliente.numero }}</td>
+                            <td>
+                                <button class="btn-vendas"><a href="{{ url_for('venda.listar_vendas', cliente_id=cliente.id) }}">Vendas</a></button>
+                                <button class="btn-editar"><a href="{{ url_for('clientes.editar_clientes', cliente_id=cliente.id) }}">Editar</a></button>
+                                <button class="btn-apagar"><a href="{{ url_for('clientes.apagar_clientes', cliente_id=cliente.id) }}">Apagar</a></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Botão para cadastrar novo cliente -->
+                <button style="width: 300px;" class="btn-cadastrar"><a href="{{ url_for('clientes.cadastrar_clientes') }}">Cadastrar Novo Cliente</a></button>
+                <!-- Link para voltar ao menu -->
+                <p><a href="{{ url_for('home.menu') }}">Voltar para Menu</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
